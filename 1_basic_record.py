@@ -54,7 +54,7 @@ print("CHOSEN DEVICE : " + "index -> " + str(chosen_device_index) + ", name -> "
 
 # open stream with this device
 stream = p.open(format=FORMAT, channels=CHANNELS,rate=RATE,input_device_index=chosen_device_index, input=True,
-                frames_per_buffer=CHUNK) # uses default input device
+                frames_per_buffer=CHUNK)
 
 # write to a wav file
 
