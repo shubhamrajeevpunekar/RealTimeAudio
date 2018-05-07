@@ -7,7 +7,7 @@ DEVICE_IP_HW = "Camera" # this usually is hw:2,0
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
-CHUNK = 4096 
+CHUNK = 4096
 RECORD_SECONDS = 10
 
 
@@ -36,9 +36,12 @@ def main():
     stream = p.open(format=FORMAT, channels=CHANNELS,rate=RATE,input_device_index=chosen_device_index, input=True,
                 frames_per_buffer=CHUNK)
 
-    for i in range(int(RECORD_SECONDS*RATE/CHUNK)) : # for 10 seconds
-        soundplot(stream)
+    # for i in range(int(RECORD_SECONDS*RATE/CHUNK)) : # for 10 seconds
+    #     soundplot(stream)
     
+    while True:
+        soundplot(stream)
+        
     stream.stop_stream()
     stream.close()
     p.terminate()

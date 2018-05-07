@@ -32,7 +32,7 @@ DEVICE_IP_HW = "Camera" # this usually is hw:2,0
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
-CHUNK = 1024
+CHUNK = 4096
 RECORD_SECONDS = 5
 OUTPUT_FILE = os.path.dirname(os.path.realpath(__file__)) + "wavs/pyaudio_record.wav"
 
