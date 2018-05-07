@@ -29,7 +29,6 @@ def noalsaerr():
 
 # TODO : make this a cmd arg
 DEVICE_IP_HW = "Camera" # this usually is hw:2,0
-
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 16000
