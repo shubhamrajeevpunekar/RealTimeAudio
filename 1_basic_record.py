@@ -28,7 +28,7 @@ def noalsaerr():
 
 
 # TODO : make this a cmd arg
-DEVICE_HW = "hw:2,0"
+DEVICE_IP_HW = "Camera" # this usually is hw:2,0
 
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -45,8 +45,9 @@ with noalsaerr():
 pp = pprint.PrettyPrinter(indent=4)
 for x in range(0,p.get_device_count()):
     info = p.get_device_info_by_index(x)    
-    if "hw:2,0" in info["name"]:
-        pp.pprint(p.get_device_info_by_index(x))
+    pp.pprint(p.get_device_info_by_index(x))
+    if DEVICE_IP_HW in info["name"]:
+        # pp.pprint(p.get_device_info_by_index(x))
         chosen_device_index = info["index"]
         chosen_device_name = info["name"]
 

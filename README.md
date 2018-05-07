@@ -24,3 +24,6 @@
 
 - To play
     aplay test.wav
+
+- Forsome reason, output playback is not working for device set to "pulse", just test the audio with aplay
+- The recorded audio is correct, both numpy arrays -> recording and playback are same
