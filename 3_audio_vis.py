@@ -18,7 +18,7 @@ def soundplot(stream):
     # pylab.title(i)
     pylab.grid()
     pylab.axis([0,len(data),-2**16/2, 2**16/2])
-    pylab.savefig("03.png", dpi=50)
+    pylab.savefig("03.png", dpi=100)
     pylab.close("all")
     print("took %.02f ms"%((time.time() - t1)*1000))
 
