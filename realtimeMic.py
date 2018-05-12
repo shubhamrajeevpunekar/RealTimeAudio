@@ -20,9 +20,41 @@ def getThreshold(stream, RATE, CHUNK, BASELINE_SECONDS):
     return THRESHOLD
 
 def isSilent(audioChunk, THRESHOLD):
-    "Returns 'True' if below the 'silent' threshold"
-    print("MAX : " + str(np.max(audioChunk)))
+    '''
+    Returns 'True' if below the 'silent' threshold
+    takes audioChunk which is a binary string
+    (audioChunk is converted to np array here, do no pre-convert it)
+    '''
+    audioChunk = np.fromstring(audioChunk, np.int16)
+    # print("MAX : " + str(np.max(audioChunk)))
     return np.max(audioChunk) < THRESHOLD
+
+def getUtterance(stream, RATE, CHUNK, THRESHOLD, CHECK_SILENCE_SECONDS, RECORD_SECONDS):
+    # record audio of CHECK_SILENCE_SECONDS
+    utteranceData = b''    
+    count = 0 # keep track of 1-sec clips added to the utterance
+    while(True):
+        checkData = b''
+        for _ in range(int(RATE*CHECK_SILENCE_SECONDS/CHUNK)):
+            streamData = stream.read(CHUNK)
+            checkData += streamData
+        
+        if(isSilent(checkData, THRESHOLD)):
+            print("SILENCE")
+            utteranceData = b'' # wipe the previous 1-second audios
+            count = 0
+            # print("DISCARDED PREVIOUS CLIPS")
+            continue
+        else:
+            utteranceData += checkData
+            # print("ADDED CLIP " + str(count))
+            count += 1
+            if(count >5):
+                # print("RETURNING UTTERANCE : ")
+                break
+        
+    return utteranceData
+
 
 def main():
 
@@ -32,7 +64,8 @@ def main():
     CHANNELS = 1
     RATE = 16000
     CHUNK = 4096
-    BASELINE_SECONDS = 2
+    BASELINE_SECONDS = 3
+    CHECK_SILENCE_SECONDS = 1
     RECORD_SECONDS = 5
     OUTPUT_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), "realtimeMicRecordings")
 
@@ -45,24 +78,20 @@ def main():
 
     
 
-    THRESHOLD = getThreshold(stream, RATE, CHUNK, BASELINE_SECONDS) - 2000
+    THRESHOLD = getThreshold(stream, RATE, CHUNK, BASELINE_SECONDS) +3000 # just to be safe
     print("THRESHOLD : " + str(THRESHOLD))
 
     utterance = 0
     while(True):
-
-        audioData = b'' # binary string to hold 5 second utterances
-        
-        # set up a wav container for each utterance 
+        utteranceData = getUtterance(stream, RATE, CHUNK, 
+                                THRESHOLD, CHECK_SILENCE_SECONDS, RECORD_SECONDS)
+      
+        # set up the wav container 
         wavFile = wave.open(os.path.join(OUTPUT_DIR, "mic_" + str(utterance) + ".wav"), "w")
         wavFile.setnchannels(1)
         wavFile.setsampwidth(pyaudio.get_sample_size(pyaudio.paInt16))
         wavFile.setframerate(16000)
-        for i in range(0, int(RATE/CHUNK * RECORD_SECONDS)):
-            streamData = stream.read(CHUNK)
-            audioData += streamData       
-      
-        wavFile.writeframes(audioData)
+        wavFile.writeframes(utteranceData)
         wavFile.close()
         print("saved " + os.path.join(OUTPUT_DIR, "mic_" + str(utterance) + ".wav"))
         utterance += 1
