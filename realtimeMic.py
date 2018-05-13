@@ -6,7 +6,6 @@ import wave
 
 from alsa_error import noalsaerr
 from channel_index import get_ip_device_index
-from energy import getEnergy
 
 def getThreshold(stream, RATE, CHUNK, BASELINE_SECONDS):
     maxChunks = []
@@ -43,14 +42,14 @@ def getUtterance(stream, RATE, CHUNK, THRESHOLD, CHECK_SILENCE_SECONDS, RECORD_S
             print("SILENCE")
             utteranceData = b'' # wipe the previous 1-second audios
             count = 0
-            # print("DISCARDED PREVIOUS CLIPS")
+            print("DISCARDED PREVIOUS CLIPS")
             continue
         else:
             utteranceData += checkData
-            # print("ADDED CLIP " + str(count))
+            print("ADDED CLIP " + str(count))
             count += 1
             if(count >5):
-                # print("RETURNING UTTERANCE : ")
+                print("RETURNING UTTERANCE : ")
                 break
         
     return utteranceData
